@@ -1,12 +1,10 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
 
-interface ChatCompletion {
-  choices: {
-    delta: {
-      content: string;
-    };
-  }[];
-}
+dotenv.config();
+
+const groqApiKey = process.env.GROQ_API_KEY;
+const groqApiUrl = process.env.GROQ_API_URL;
 
 interface GroqClient {
   chat: {
@@ -28,7 +26,11 @@ const groqClient: GroqClient = {
   chat: {
     completions: {
       create: async (params) => {
-        const response = await axios.post('https://api.groq.com/v1/chat/completions', params);
+        const headers = {
+          'Authorization': `Bearer ${groqApiKey}`,
+        };
+
+        const response = await axios.post(`${groqApiUrl}/chat/completions`, params, { headers });
         return response.data;
       },
     },
